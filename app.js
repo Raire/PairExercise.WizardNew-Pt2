@@ -13,7 +13,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.get("/", async (req, res) => {
   try{
-    const data = await client.query('SELECT * FROM posts');
+    const data = await client.query(`SELECT *, counting.upvotes FROM posts JOIN users ON posts.userid=users.id JOIN (SELECT postid, COUNT(*) AS upvotes FROM upvotes GROUP BY postid) AS counting ON posts.id = counting.postid`);
     const posts = data.rows;
     res.send(postList(posts));
   }
